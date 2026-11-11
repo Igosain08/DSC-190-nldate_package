@@ -54,7 +54,8 @@ UNITS: dict[str, str] = {
 _MONTH_RE = "|".join(sorted(MONTHS, key=len, reverse=True))
 _ORD = r"(?:st|nd|rd|th)?"
 
-_ISO = re.compile(r"(\d{4})-(\d{1,2})-(\d{1,2})")
+# Year-first: "2025-12-04", "2025/12/04", "2025.12.04"
+_ISO = re.compile(r"(\d{4})([-/.])(\d{1,2})\2(\d{1,2})")
 _SLASH = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 # "December 1st, 2025", "Dec 1 2025", "December 1st" (current year)
 _MONTH_DAY_YEAR = re.compile(
@@ -129,7 +130,7 @@ def _parse_offset(s: str) -> _Offset:
 
 def _parse_absolute(s: str, today: date) -> date | None:
     if m := _ISO.fullmatch(s):
-        return _make_date(int(m[1]), int(m[2]), int(m[3]))
+        return _make_date(int(m[1]), int(m[3]), int(m[4]))
     if m := _SLASH.fullmatch(s):
         return _make_date(int(m[3]), int(m[1]), int(m[2]))
     if m := _MONTH_DAY_YEAR.fullmatch(s):

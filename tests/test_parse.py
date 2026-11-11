@@ -15,6 +15,12 @@ def test_iso_date() -> None:
     assert parse("2025-12-01") == date(2025, 12, 1)
 
 
+def test_year_first_slash_date() -> None:
+    assert parse("2025/12/04") == date(2025, 12, 4)
+    assert parse("2025.12.04") == date(2025, 12, 4)
+    assert parse("2 days after 2025/12/04") == date(2025, 12, 6)
+
+
 def test_today_tomorrow_yesterday() -> None:
     assert parse("today", today=TODAY) == date(2026, 11, 11)
     assert parse("tomorrow", today=TODAY) == date(2026, 11, 12)
